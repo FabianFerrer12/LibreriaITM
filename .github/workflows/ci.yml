@@ -1,0 +1,43 @@
+name: CI/CD Flask API (SQLite)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔹 Checkout del código
+        uses: actions/checkout@v3
+
+      - name: 🔹 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 🔹 Instalar dependencias
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔹 Configurar base de datos SQLite
+        run: |
+          export FLASK_ENV=testing
+          export DATABASE_URL="sqlite:///libreria.db"
+          flask db upgrade
+
+      - name: 🔹 Ejecutar pruebas con Pytest
+        run: |
+          export FLASK_ENV=testing
+          pytest --disable-warnings --cov=app tests/
+
+      - name: 🔹 Subir cobertura a Codecov (opcional)
+        uses: codecov/codecov-action@v3
