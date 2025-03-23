@@ -30,16 +30,13 @@ jobs:
 
       - name: 🔹 Configurar base de datos SQLite
         run: |
-          flask db init
-          flask db migrate -m "Inico db"
+          source venv/bin/activate
+          export FLASK_APP=app
           export FLASK_ENV=testing
           export DATABASE_URL="sqlite:///libreria.db"
           flask db upgrade
 
       - name: 🔹 Ejecutar pruebas con Pytest
         run: |
-          export FLASK_ENV=testing
+          source venv/bin/activate
           pytest --disable-warnings --cov=app tests/
-
-      - name: 🔹 Subir cobertura a Codecov (opcional)
-        uses: codecov/codecov-action@v3
