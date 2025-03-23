@@ -30,6 +30,8 @@ jobs:
 
       - name: 🔹 Configurar base de datos SQLite
         run: |
+          flask db init
+          flask db migrate -m "Inico db"
           export FLASK_ENV=testing
           export DATABASE_URL="sqlite:///libreria.db"
           flask db upgrade
