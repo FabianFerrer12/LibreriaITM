@@ -40,19 +40,24 @@ jobs:
         run: |
           source venv/bin/activate
           pytest --disable-warnings --cov=app tests/
-
-      - name: Install Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
-
-      - name: Deploy to Render
-        env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+  deploy:
+    name: Desplegar en render
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Llamar a la API de Render para el despliegue
         run: |
-          curl -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
-               -H "Authorization: Bearer $RENDER_API_KEY" \
-               -H "Accept: application/json" \
-               -H "Content-Type: application/json" \
-               -d '{}'
+          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+            -H "Authorization: Bearer $RENDER_API_KEY" \
+            -H "Accept: application/json"
+
+    env:
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+
+
+
 
           
