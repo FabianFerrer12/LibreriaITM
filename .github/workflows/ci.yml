@@ -40,3 +40,25 @@ jobs:
         run: |
           source venv/bin/activate
           pytest --disable-warnings --cov=app tests/
+
+      - name: Install Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Login to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku auth:token
+
+      - name: Add Heroku remote
+        run: heroku git:remote -a flask-libreria
+
+      - name: Push code to Heroku
+        run: git push heroku main
+
+      - name: Run database migrations
+        env:
+          FLASK_APP: run.py
+        run: |
+          heroku run flask db upgrade
+
+          
