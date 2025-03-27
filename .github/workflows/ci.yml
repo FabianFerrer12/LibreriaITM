@@ -44,21 +44,15 @@ jobs:
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
 
-      - name: Login to Heroku
+      - name: Deploy to Render
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku auth:token
-
-      - name: Add Heroku remote
-        run: heroku git:remote -a flask-libreria
-
-      - name: Push code to Heroku
-        run: git push heroku main
-
-      - name: Run database migrations
-        env:
-          FLASK_APP: run.py
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
         run: |
-          heroku run flask db upgrade
+          curl -X POST "https://api.render.com/v1/services/$SERVICE_ID/deploys" \
+               -H "Authorization: Bearer $RENDER_API_KEY" \
+               -H "Accept: application/json" \
+               -H "Content-Type: application/json" \
+               -d '{}'
 
           
