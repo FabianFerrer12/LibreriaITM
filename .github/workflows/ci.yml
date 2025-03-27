@@ -46,16 +46,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Verificar variables de entorno
-        run: env | grep "RENDER"
-      - name: Debug Variables
-        run: |
-          echo "Service ID: ${{secrets.RENDER_SERVICE_ID}}"
-          echo "API Key Length: ${{secrets.RENDER_API_KEY}}"  # Solo muestra la longitud, no el valor completo
-        env:
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-
       - name: Llamar a la API de Render para el despliegue
         run: |
           curl -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" \
